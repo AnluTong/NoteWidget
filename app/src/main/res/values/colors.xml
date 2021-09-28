@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="content_text_color">#414141</color>
-    <color name="widget_text_color">#ffffff</color>
+    <color name="public_nav_bg">#efeff0</color>
+    <color name="public_txt_content">#666666</color>
+    <color name="public_txt_title">#333333</color>
 </resources>
