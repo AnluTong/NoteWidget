@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">快便签</string>
 
-    <string name="main_activity_title">快便签</string>
+    <string name="home_activity_title">快便签</string>
+    <string name="detail_activity_title">快便签</string>
     <string name="main_activity_btn_title">确定</string>
 </resources>

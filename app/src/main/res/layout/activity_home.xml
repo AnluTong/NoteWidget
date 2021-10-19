@@ -2,35 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/public_background"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <include layout="@layout/view_nav_bar" />
 
-    <EditText
-        android:id="@+id/et_text"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@null"
-        android:gravity="start"
-        android:textColor="#414141"
-        android:layout_margin="15dp"
-        android:textSize="15sp" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/btn_ok"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/selector_btn_bg"
-        android:gravity="center"
-        android:singleLine="true"
-        android:text="@string/main_activity_btn_title"
-        android:textColor="@color/selector_btn_text_color"
-        android:textSize="15sp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rc_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp" />
+
+        <ImageView
+            android:id="@+id/fr_add"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="28dp"
+            android:layout_marginBottom="28dp"
+            android:src="@drawable/selector_add_btn" />
+    </FrameLayout>
+
 </LinearLayout>

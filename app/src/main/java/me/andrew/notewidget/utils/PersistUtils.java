@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Map;
+
 public class PersistUtils {
 
     private static volatile SharedPreferences sPreferences;
@@ -52,6 +54,10 @@ public class PersistUtils {
 
     public static long getLong(String key, long defaultValue) {
         return sPreferences.getLong(key, defaultValue);
+    }
+
+    public static Map<String, ?> getAll() {
+        return sPreferences.getAll();
     }
 
     public static void remove(String key) {

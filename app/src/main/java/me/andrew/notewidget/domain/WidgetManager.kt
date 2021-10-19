@@ -8,10 +8,9 @@ import android.content.Intent
 import android.widget.RemoteViews
 import me.andrew.notewidget.R
 import me.andrew.notewidget.ui.activity.HomeActivity
+import me.andrew.notewidget.ui.viewdata.ListNoteData
 import me.andrew.notewidget.ui.widget.DefaultWidgetProvider
 import me.andrew.notewidget.utils.PersistUtils
-import me.andrew.notewidget.utils.catch
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,36 +20,52 @@ import java.util.*
  */
 private const val PERSIST_KEY = "persistKey"
 private val timeFormat = SimpleDateFormat("yyyy.MM.dd")
+private val noteList: MutableList<ListNoteData>? = null
+    get() {
+        if (field != null) {
+            return field
+        }
+        val ret = mutableListOf<ListNoteData>()
+        PersistUtils.getAll()?.let {
+            for (e in it.entries) {
+                if (e.value is String) {
+                    ret.add(ListNoteData().apply {
+                        fromJson(e.value as String)
+                        id = e.key.toLong()
+                    })
+                }
+            }
+        }
+        ret.sort()
+        return ret
+    }
 
-fun saveWidgetText(txt: String) {
-    PersistUtils.put(
-        PERSIST_KEY,
-        catch { JSONObject().put("text", txt).put("time", System.currentTimeMillis()) })
+fun getNotes(): MutableList<ListNoteData> = noteList!!
+
+fun addWidget(noteData: ListNoteData) {
+    val list = noteList!!
+    list.remove(noteData)
+    list.add(noteData)
+    list.sort()
+    PersistUtils.put(noteData.id.toString(), noteData.toJson())
 }
 
-fun getWidgetText(): String {
-    val string = PersistUtils.getString(PERSIST_KEY, "{}")
-    val json = catch { JSONObject(string) }
-    return json?.optString("text") ?: ""
-}
+fun getTime(time: Long): String = timeFormat.format(Date(time))
 
 fun remoteViewInvalidate(ctx: Context) {
-    val string = PersistUtils.getString(PERSIST_KEY, "{}")
-    val json = catch { JSONObject(string) }
+    val list = noteList!!
+    if (list.isNotEmpty()) {
+        val data = list[0]
 
-    val content = json?.optString("text") ?: ""
-    val now = System.currentTimeMillis()
-    val time = json?.optLong("time", now) ?: now
-    val setTime = timeFormat.format(Date(time))
+        val remoteView = RemoteViews(ctx.packageName, R.layout.view_default_widget_provider)
+        remoteView.setTextViewText(R.id.tv_content, data.content)
+        remoteView.setTextViewText(R.id.tv_date, getTime(data.time))
+        val intent = Intent(ctx, HomeActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(ctx, 0, intent, 0)
+        remoteView.setOnClickPendingIntent(R.id.tv_content, pendingIntent)
 
-    val remoteView = RemoteViews(ctx.packageName, R.layout.view_default_widget_provider)
-    remoteView.setTextViewText(R.id.tv_content, content)
-    remoteView.setTextViewText(R.id.tv_date, setTime)
-    val intent = Intent(ctx, HomeActivity::class.java)
-    val pendingIntent = PendingIntent.getActivity(ctx, 0, intent, 0)
-    remoteView.setOnClickPendingIntent(R.id.tv_content, pendingIntent)
-
-    val manager = AppWidgetManager.getInstance(ctx)
-    val cp = ComponentName(ctx, DefaultWidgetProvider::class.java.name)
-    manager.updateAppWidget(cp, remoteView)
+        val manager = AppWidgetManager.getInstance(ctx)
+        val cp = ComponentName(ctx, DefaultWidgetProvider::class.java.name)
+        manager.updateAppWidget(cp, remoteView)
+    }
 }

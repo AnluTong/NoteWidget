@@ -1,42 +1,75 @@
 package me.andrew.notewidget.ui.activity
 
+import android.content.Intent
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.listener.OnItemChildClickListener
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.view_nav_bar.*
 import me.andrew.notewidget.R
-import me.andrew.notewidget.domain.getWidgetText
-import me.andrew.notewidget.domain.remoteViewInvalidate
-import me.andrew.notewidget.domain.saveWidgetText
+import me.andrew.notewidget.domain.getNotes
+import me.andrew.notewidget.domain.getTime
+import me.andrew.notewidget.ui.viewdata.ListNoteData
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
 
 /**
  * Created by Andrew
- * Date on 21-9-28.
+ * Date on 21-9-29.
  */
-class HomeActivity : BaseActivity() {
+class HomeActivity : BaseActivity(), OnItemChildClickListener {
+
+    private val listAdapter by lazy {
+        ListAdapter()
+    }
 
     override fun layoutId() = R.layout.activity_home
 
-    override fun initData() {
-        et_text.setText(getWidgetText())
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        saveWidgetText(et_text.text.toString())
+    override fun onStart() {
+        super.onStart()
+        val list = getNotes()
+        listAdapter.setList(list)
     }
 
     override fun initView() {
         iv_back.setOnClickListener {
             onBackPressed()
         }
-        tv_title.setText(R.string.main_activity_title)
-        btn_ok.setOnClickListener {
-            sendText(et_text.text.toString())
-            onBackPressed()
+        tv_title.setText(R.string.home_activity_title)
+
+        rc_list.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = listAdapter
+
+            OverScrollDecoratorHelper.setUpOverScroll(
+                this,
+                OverScrollDecoratorHelper.ORIENTATION_VERTICAL
+            )
+        }
+
+        listAdapter.addChildClickViewIds(R.id.pl_container)
+        listAdapter.setOnItemChildClickListener(this)
+
+        fr_add.setOnClickListener {
+            startActivity(Intent(this, DetailNoteActivity::class.java))
         }
     }
 
-    private fun sendText(text: String) {
-        saveWidgetText(text)
-        remoteViewInvalidate(applicationContext)
+    private class ListAdapter :
+        BaseQuickAdapter<ListNoteData, BaseViewHolder>(R.layout.view_holder_home_list) {
+
+        override fun convert(holder: BaseViewHolder, item: ListNoteData) {
+            holder.setText(R.id.tv_content, item.content)
+                .setText(R.id.tv_time, getTime(item.time))
+        }
+    }
+
+    override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>, view: View, position: Int) {
+        val data = adapter.getItem(position) as ListNoteData
+        when (view.id) {
+            R.id.pl_container -> startActivity(DetailNoteActivity.newIntent(this, data))
+        }
     }
 }

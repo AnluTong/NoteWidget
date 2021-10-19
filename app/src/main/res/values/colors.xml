@@ -3,4 +3,9 @@
     <color name="public_nav_bg">#efeff0</color>
     <color name="public_txt_content">#666666</color>
     <color name="public_txt_title">#333333</color>
+    <color name="public_background">#F7F8FA</color>
+    <color name="public_shadow">#E4E4E4</color>
+
+    <color name="white">#ffffff</color>
+
 </resources>
