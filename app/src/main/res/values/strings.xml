@@ -2,6 +2,9 @@
     <string name="app_name">快便签</string>
 
     <string name="home_activity_title">快便签</string>
-    <string name="detail_activity_title">快便签</string>
+    <string name="create_note">创建便签</string>
+    <string name="edit_note">编辑便签</string>
     <string name="main_activity_btn_title">确定</string>
+    <string name="make_top">置顶</string>
+    <string name="delete">删除</string>
 </resources>

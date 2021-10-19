@@ -2,6 +2,7 @@ package me.andrew.notewidget
 
 import android.app.Application
 import me.andrew.notewidget.utils.PersistUtils
+import me.andrew.notewidget.utils.UIUtils
 
 /**
  * Created by Andrew
@@ -11,5 +12,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         PersistUtils.initialize(this)
+        UIUtils.initialize(this)
     }
 }

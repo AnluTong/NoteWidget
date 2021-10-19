@@ -6,7 +6,7 @@ import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_detail_note.*
 import kotlinx.android.synthetic.main.view_nav_bar.*
 import me.andrew.notewidget.R
-import me.andrew.notewidget.domain.addWidget
+import me.andrew.notewidget.domain.addNote
 import me.andrew.notewidget.domain.remoteViewInvalidate
 import me.andrew.notewidget.ui.viewdata.ListNoteData
 
@@ -35,7 +35,7 @@ class DetailNoteActivity : BaseActivity() {
         iv_back.setOnClickListener {
             onBackPressed()
         }
-        tv_title.setText(R.string.detail_activity_title)
+        tv_title.setText(if (data == null) R.string.create_note else R.string.edit_note)
         btn_ok.setOnClickListener {
             sendText(et_text.text.toString())
             onBackPressed()
@@ -59,7 +59,7 @@ class DetailNoteActivity : BaseActivity() {
         data!!.apply {
             content = text
             time = System.currentTimeMillis()
-            addWidget(this)
+            addNote(this)
         }
         remoteViewInvalidate(applicationContext)
     }

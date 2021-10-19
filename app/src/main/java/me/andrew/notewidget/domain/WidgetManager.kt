@@ -20,40 +20,46 @@ import java.util.*
  */
 private const val PERSIST_KEY = "persistKey"
 private val timeFormat = SimpleDateFormat("yyyy.MM.dd")
-private val noteList: MutableList<ListNoteData>? = null
-    get() {
-        if (field != null) {
-            return field
-        }
-        val ret = mutableListOf<ListNoteData>()
-        PersistUtils.getAll()?.let {
-            for (e in it.entries) {
-                if (e.value is String) {
-                    ret.add(ListNoteData().apply {
-                        fromJson(e.value as String)
-                        id = e.key.toLong()
-                    })
-                }
+private var noteList: MutableList<ListNoteData>? = null
+
+fun getNotes(): MutableList<ListNoteData> {
+    if (noteList != null) {
+        return noteList!!
+    }
+    val ret = mutableListOf<ListNoteData>()
+    PersistUtils.getAll()?.let {
+        for (e in it.entries) {
+            if (e.value is String) {
+                ret.add(ListNoteData().apply {
+                    fromJson(e.value as String)
+                    id = e.key.toLong()
+                })
             }
         }
-        ret.sort()
-        return ret
     }
+    ret.sort()
+    noteList = ret
+    return ret
+}
 
-fun getNotes(): MutableList<ListNoteData> = noteList!!
-
-fun addWidget(noteData: ListNoteData) {
-    val list = noteList!!
+fun addNote(noteData: ListNoteData) {
+    val list = getNotes()
     list.remove(noteData)
     list.add(noteData)
     list.sort()
     PersistUtils.put(noteData.id.toString(), noteData.toJson())
 }
 
+fun deleteNote(noteData: ListNoteData) {
+    val list = getNotes()
+    list.remove(noteData)
+    PersistUtils.remove(noteData.id.toString())
+}
+
 fun getTime(time: Long): String = timeFormat.format(Date(time))
 
 fun remoteViewInvalidate(ctx: Context) {
-    val list = noteList!!
+    val list = getNotes()
     if (list.isNotEmpty()) {
         val data = list[0]
 
