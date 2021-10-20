@@ -74,11 +74,9 @@ public class EditPopWindow extends PopupWindow {
         this.update();
     }
 
-    public void showPopupWindow(View parent) {
+    public void showPopupWindow(View parent, float offsetX) {
         if (!this.isShowing()) {
-            Rect rect = new Rect();
-            parent.getGlobalVisibleRect(rect);
-            showAsDropDown(parent, rect.width() - UIUtils.dipToPx(150f), -UIUtils.dipToPx(20));
+            showAsDropDown(parent, (int) offsetX, -UIUtils.dipToPx(20));
         }
     }
 

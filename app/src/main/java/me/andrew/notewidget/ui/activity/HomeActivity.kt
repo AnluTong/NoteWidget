@@ -1,9 +1,12 @@
 package me.andrew.notewidget.ui.activity
 
 import android.content.Intent
+import android.view.MotionEvent
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.diff.BrvahAsyncDifferConfig
 import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.chad.library.adapter.base.listener.OnItemChildLongClickListener
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -36,7 +39,7 @@ class HomeActivity : BaseActivity(), OnItemChildClickListener, OnItemChildLongCl
 
     private fun invalidate() {
         val list = getNotes()
-        listAdapter.setList(list)
+        listAdapter.setDiffNewData(list.toMutableList())
     }
 
     override fun initView() {
@@ -67,11 +70,42 @@ class HomeActivity : BaseActivity(), OnItemChildClickListener, OnItemChildLongCl
     }
 
     private class ListAdapter :
-        BaseQuickAdapter<ListNoteData, BaseViewHolder>(R.layout.view_holder_home_list) {
+        BaseQuickAdapter<ListNoteData, BaseViewHolder>(R.layout.view_holder_home_list),
+        View.OnTouchListener {
+
+        init {
+            setDiffConfig(BrvahAsyncDifferConfig.Builder(object :
+                DiffUtil.ItemCallback<ListNoteData>() {
+                override fun areItemsTheSame(
+                    oldItem: ListNoteData,
+                    newItem: ListNoteData
+                ) = areContentsTheSame(oldItem, newItem)
+
+                override fun areContentsTheSame(
+                    oldItem: ListNoteData,
+                    newItem: ListNoteData
+                ): Boolean {
+                    return oldItem.id == newItem.id
+                            && oldItem.priority == newItem.priority
+                            && oldItem.content == newItem.content
+                            && oldItem.time == newItem.time
+                }
+            }).build())
+        }
+
+        var currentXOffset = 0f
 
         override fun convert(holder: BaseViewHolder, item: ListNoteData) {
             holder.setText(R.id.tv_content, item.content)
                 .setText(R.id.tv_time, getTime(item.time))
+
+            val container = holder.getView<View>(R.id.pl_container)
+            container.setOnTouchListener(this)
+        }
+
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            currentXOffset = event?.x ?: 0f
+            return false
         }
     }
 
@@ -110,7 +144,7 @@ class HomeActivity : BaseActivity(), OnItemChildClickListener, OnItemChildLongCl
                             invalidate()
                         }
                     }
-                }.showPopupWindow(view)
+                }.showPopupWindow(view, listAdapter.currentXOffset)
             }
         }
         return true
