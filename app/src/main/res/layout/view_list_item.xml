@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_marginLeft="14dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="14dp"
+    android:layout_marginBottom="5dp"
+    android:outlineAmbientShadowColor="@color/public_shadow"
+    android:outlineSpotShadowColor="@color/public_shadow"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp">
+
+    <View
+        android:id="@+id/v_v_click"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selector_item_click" />
+
+    <TextView
+        android:id="@+id/tv_v_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="14dp"
+        android:textColor="@color/public_txt_title"
+        android:textSize="15sp" />
+
+    <ImageView
+        android:id="@+id/iv_v_next"
+        android:layout_width="8dp"
+        android:layout_height="15dp"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="14dp"
+        android:src="@drawable/vector_icon_arrow_right_d0d0d3" />
+
+</androidx.cardview.widget.CardView>

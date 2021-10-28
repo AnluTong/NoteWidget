@@ -7,4 +7,7 @@
     <string name="main_activity_btn_title">确定</string>
     <string name="make_top">置顶</string>
     <string name="delete">删除</string>
+    <string name="about">关于</string>
+    <string name="support">支持一下</string>
+    <string name="setting">设置</string>
 </resources>

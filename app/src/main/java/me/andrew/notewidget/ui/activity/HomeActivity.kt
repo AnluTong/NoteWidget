@@ -46,6 +46,11 @@ class HomeActivity : BaseActivity(), OnItemChildClickListener, OnItemChildLongCl
         iv_back.setOnClickListener {
             onBackPressed()
         }
+        iv_option.visibility = View.VISIBLE
+        iv_option.setOnClickListener {
+            startActivity(Intent(this, AboutActivity::class.java))
+        }
+
         tv_title.setText(R.string.home_activity_title)
 
         rc_list.apply {
